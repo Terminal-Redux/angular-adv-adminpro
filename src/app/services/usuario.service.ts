@@ -8,6 +8,7 @@ import { environment } from 'src/environments/environment';
 
 import { LoginForm } from '../interfaces/login-form.interface';
 import { RegisterForm } from '../interfaces/register-form.interface';
+import { Usuario } from '../models/usuario.model';
 
 declare const google: any;
 
@@ -17,11 +18,23 @@ const base_url = environment.base_url;
   providedIn: 'root',
 })
 export class UsuarioService {
+  public usuario?: Usuario;
+
   constructor(
     private http: HttpClient,
     private router: Router,
     private ngZone: NgZone
-  ) {}
+  ) {
+    this.googleInit();
+  }
+
+  googleInit() {
+    google.accounts.id.initialize({
+      client_id:
+        '1049241747875-63f3vi8jcflf2b7u5iurf69j1c1ff85t.apps.googleusercontent.com',
+      callback: (response: any) => {},
+    });
+  }
 
   logout() {
     localStorage.removeItem('token');
@@ -43,10 +56,13 @@ export class UsuarioService {
         },
       })
       .pipe(
-        tap((resp: any) => {
+        map((resp: any) => {
+          const { email, google, nombre, role, uid, img = '' } = resp.usuario;
+          this.usuario = new Usuario(nombre, email, '', img, google, role, uid);
+
           localStorage.setItem('token', resp.token);
+          return true
         }),
-        map((resp) => true),
         catchError((error) => of(false))
       );
   }
