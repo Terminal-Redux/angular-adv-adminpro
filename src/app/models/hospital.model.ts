@@ -1,7 +1,7 @@
 interface _HospitalUser {
-    _id: string;
-    nombre: string;
-    img: string;
+  _id: string;
+  nombre: string;
+  img: string;
 }
 
 export class Hospital {
@@ -9,6 +9,12 @@ export class Hospital {
     public nombre: string,
     public _id?: string,
     public img?: string,
-    public usuario?: _HospitalUser,
+    public usuario?: _HospitalUser
   ) {}
+}
+
+export interface HospitalesResponse {
+  ok: boolean;
+  hospitales: Hospital[];
+  uid: string;
 }

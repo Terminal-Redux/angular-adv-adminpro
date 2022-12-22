@@ -26,7 +26,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   constructor(
     private busquedasService: BusquedasService,
     private modalImagenService: ModalImagenService,
-    private usuariosService: UsuarioService,
+    private usuariosService: UsuarioService
   ) {}
 
   ngOnDestroy(): void {
@@ -35,7 +35,9 @@ export class UsuariosComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.cargarUsuarios();
-    this.modalImagenService.nuevaImagen.pipe(delay(100)).subscribe(img => this.cargarUsuarios());
+    this.imgSubs = this.modalImagenService.nuevaImagen
+      .pipe(delay(300))
+      .subscribe((img) => this.cargarUsuarios());
   }
 
   cargarUsuarios() {
@@ -70,13 +72,13 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     this.busquedasService
       .buscar('usuarios', termino)
       .subscribe((resultados) => {
-        this.usuarios = resultados;
+        this.usuarios = resultados as Usuario[];
       });
     return;
   }
 
   eliminarUsuario(usuario: Usuario) {
-    if(usuario.uid === this.usuariosService.uid) {
+    if (usuario.uid === this.usuariosService.uid) {
       return Swal.fire('¡Error!', 'No puede borrarse a si mismo', 'error');
     }
     return Swal.fire({
@@ -102,13 +104,12 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   }
 
   cambiarRole(usuario: Usuario) {
-    this.usuariosService.guardarUsuario(usuario).subscribe(resp => { console.log(resp);
-     });
+    this.usuariosService.guardarUsuario(usuario).subscribe((resp) => {
+      console.log(resp);
+    });
   }
 
   abrirModal(usuario: Usuario) {
-    console.log(usuario);
-    this.modalImagenService.abrirModal('usuarios',  usuario.uid!, usuario.img);
-
+    this.modalImagenService.abrirModal('usuarios', usuario.uid!, usuario.img);
   }
 }

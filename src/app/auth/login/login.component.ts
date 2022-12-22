@@ -39,6 +39,7 @@ export class LoginComponent implements AfterViewInit {
       remember: [false],
     });
   }
+
   ngAfterViewInit(): void {
     this.googleInit();
   }
